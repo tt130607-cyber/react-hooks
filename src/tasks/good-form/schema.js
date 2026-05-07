@@ -1,0 +1,38 @@
+import { z } from "zod";
+
+export const schema = z.object({
+  firstName: z
+    .string()
+    .min(2, "Минимум 2 символа"),
+
+  lastName: z
+    .string()
+    .min(2, "Минимум 2 символа"),
+
+  email: z
+    .string()
+    .email("Некорректный email"),
+
+  password: z
+    .string()
+    .min(8, "Минимум 8 символов")
+    .regex(/[A-Z]/, "Нужна заглавная буква")
+    .regex(/[0-9]/, "Нужна цифра"),
+
+  confirmPassword: z.string(),
+
+  role: z
+    .string()
+    .min(1, "Выберите роль"),
+
+  agree: z
+    .boolean()
+    .refine(v => v === true, "Примите условия"),
+})
+.refine(
+  data => data.password === data.confirmPassword,
+  {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  }
+);
